@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" type="text/css" href="/html/w2ui-1.3.min.css" />
-        <script src="/html/jquery.min.js"></script>
-        <script type="text/javascript" src="/html/w2ui-1.3.min.js"></script>
-        <script type="text/javascript" src="/html/library.js"></script>
+        <link rel="stylesheet" type="text/css" href="/html/w2ui-1.3.2.css" />
+        <script src="/html/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="/html/w2ui-1.3.2.js"></script>
         <script type="text/javascript" src="/html/library.js"></script>
         <title>BaConf</title>
     </head>
