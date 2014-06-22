@@ -1,0 +1,70 @@
+[Director]
+Name                = Type=String Required=True
+DIRPort             = Type=Integer Default=9101
+Address             = Type=IPAddr Required=True
+Password            = Type=Password Required=True
+Monitor             = Type=Bool Default=False
+
+[Console]
+Name                = Type=String Required=True
+Password            = Type=Password Required=True
+Director            = Type=Resource Resource=Director Required=True
+Heartbeat Interval  = Type=Integer Default=0
+
+[JobDefs]
+
+[Schedule]
+
+[Storage]
+Name                = Type=String Required=True
+Working Directory   = Type=String Required=True
+Pid Directory       = Type=String Required=True Default=/var/run
+Heatbeat Interval   = Type=Duration Default=0
+Client Connect Wait = Type=Duration Default=30
+Maximum Concurrent Jobs = Type=Integer Default=10
+SDAddresses         = Type=IPAddrExtra Exclude=SDAddress
+SDPort              = Type=Integer Default=9103
+SDAddress           = Type=IPAddr
+
+[Device]
+Name                = Type=String Required=True
+Archive Device      = Type=String 
+Device Type         = Type=Enum PossibleValues=File,Tape,Fifo 
+Media Type          = Type=String
+Autochanger         = Type=Bool Default=False
+Changer Device      = Type=String 
+Changer Command     = Type=String
+Alert Command       = Type=String
+Drive Index         = Type=Integer Default=0
+Autoselect          = Type=Bool Default=True
+Maximum Concurrent Jobs = Type=Integer Default=5
+Maximum Changer Wait = Type=Duration Default=5
+Maximum Rewind Wait = Type=Duration Default=5
+Maximum Open Wait   = Type=Duration Default=5
+Always Open         = Type=Bool Default=False
+Removable media     = Type=Bool
+Random access       = Type=Bool
+Requires Mount      = Type=Bool
+Mount Point         = Type=String
+Mount Command       = Type=String
+Unmount Command     = Type=String
+Block Checksum      = Type=Bool Default=True
+Minumum Block Size  = Type=FSize Default=64512
+Maximum Block Size  = Type=FSize Default=64512
+Maximum Volume Size = Type=FSize Required=True
+Maximum File Size   = Type=FSize Required=True
+
+[Messages]
+
+[FileSet]
+
+
+[Job]
+
+[Client]
+
+[Catalog]
+
+[Pool]
+
+[Finish]
