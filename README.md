@@ -1,3 +1,5 @@
+The sources in the master branch are not work yet. The project is under development!
+
 baconf
 ======
 
