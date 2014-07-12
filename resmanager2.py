@@ -1,60 +1,60 @@
 #!/usr/bin/env python_
 
-from resourceclient import ResourceClient
-from resourceclient import ResourceDevice
-from resourceclient import ResourceStorage
-from resourceclient import ResourceDirector
-from resourceclient import ResourceMessages
-from resourceclient import ResourceCatalog
-from resourceclient import ResourcePool
-from resourceclient import ResourceJob
-from resourceclient import ResourceFileSet
-from resourceclient import ResourceSchedule
-from resourceclient import ResourceConsole
-
+# from resourceclient import ResourceClient
+# from resourceclient import ResourceDevice
+# from resourceclient import ResourceStorage
+# from resourceclient import ResourceDirector
+# from resourceclient import ResourceMessages
+# from resourceclient import ResourceCatalog
+# from resourceclient import ResourcePool
+# from resourceclient import ResourceJob
+# from resourceclient import ResourceFileSet
+# from resourceclient import ResourceSchedule
+# from resourceclient import ResourceConsole
+# 
 from parser2 import ParseConfigFile as Parser
-from coreres import *
-from copy import deepcopy
-import json
-
-RESCLASSES = {  
-    RESCLASS_CLIENT   : { 'label': 'Client'   , 'class': ResourceClient   , 'resource': OPTION_TYPE_RESOURCE_CLIENT },
-    RESCLASS_DEVICE   : { 'label': 'Device'   , 'class': ResourceDevice   , 'resource': OPTION_TYPE_RESOURCE_DEVICE },
-    RESCLASS_STORAGE  : { 'label': 'Storage'  , 'class': ResourceStorage  , 'resource': OPTION_TYPE_RESOURCE_STORAGE },
-    RESCLASS_DIRECTOR : { 'label': 'Director' , 'class': ResourceDirector , 'resource': OPTION_TYPE_RESOURCE_DIRECTOR },
-    RESCLASS_MESSAGE  : { 'label': 'Messages' , 'class': ResourceMessages , 'resource': OPTION_TYPE_RESOURCE_MESSAGES },
-    RESCLASS_CATALOG  : { 'label': 'Catalog'  , 'class': ResourceCatalog  , 'resource': OPTION_TYPE_RESOURCE_CATALOG },
-    RESCLASS_POOL     : { 'label': 'Pool'     , 'class': ResourcePool     , 'resource': OPTION_TYPE_RESOURCE_POOL },
-    RESCLASS_JOB      : { 'label': 'Job'      , 'class': ResourceJob      , 'resource': OPTION_TYPE_RESOURCE_JOB },
-    RESCLASS_FILESET  : { 'label': 'FileSet'  , 'class': ResourceFileSet  , 'resource': OPTION_TYPE_RESOURCE_FILESET },
-    RESCLASS_SCHEDULE : { 'label': 'Schedule' , 'class': ResourceSchedule , 'resource': OPTION_TYPE_RESOURCE_SCHEDULE },
-    RESCLASS_CONSOLE  : { 'label': 'Console'  , 'class': ResourceConsole  , 'resource': OPTION_TYPE_RESOURCE_CONSOLE },
-}
-
-ResourcesList = {
-    RESCLASS_CLIENT   : ResourceClient,
-    RESCLASS_DEVICE   : ResourceDevice,
-    RESCLASS_STORAGE  : ResourceStorage,
-    RESCLASS_DIRECTOR : ResourceDirector,
-    RESCLASS_MESSAGE  : ResourceMessages,
-    RESCLASS_CATALOG  : ResourceCatalog,
-    RESCLASS_JOB      : ResourceJob,
-    RESCLASS_FILESET  : ResourceFileSet,
-    RESCLASS_SCHEDULE : ResourceSchedule,
-    RESCLASS_CONSOLE  : ResourceConsole,
-}
-
-class Stack:
-    m_values = {}
-    m_icount = -1
-    def push(self, value):
-        self.mi_icount =+ 1
-        self.m_values[m_icount] = value 
-    def pop(self):
-        result = self.m_values[self.m_icount]
-        self.m_values[self.m_icount]
-        self.m_icount =- 1
-        return result
+# from coreres import *
+# from copy import deepcopy
+# import json
+# 
+# RESCLASSES = {  
+#     RESCLASS_CLIENT   : { 'label': 'Client'   , 'class': ResourceClient   , 'resource': OPTION_TYPE_RESOURCE_CLIENT },
+#     RESCLASS_DEVICE   : { 'label': 'Device'   , 'class': ResourceDevice   , 'resource': OPTION_TYPE_RESOURCE_DEVICE },
+#     RESCLASS_STORAGE  : { 'label': 'Storage'  , 'class': ResourceStorage  , 'resource': OPTION_TYPE_RESOURCE_STORAGE },
+#     RESCLASS_DIRECTOR : { 'label': 'Director' , 'class': ResourceDirector , 'resource': OPTION_TYPE_RESOURCE_DIRECTOR },
+#     RESCLASS_MESSAGE  : { 'label': 'Messages' , 'class': ResourceMessages , 'resource': OPTION_TYPE_RESOURCE_MESSAGES },
+#     RESCLASS_CATALOG  : { 'label': 'Catalog'  , 'class': ResourceCatalog  , 'resource': OPTION_TYPE_RESOURCE_CATALOG },
+#     RESCLASS_POOL     : { 'label': 'Pool'     , 'class': ResourcePool     , 'resource': OPTION_TYPE_RESOURCE_POOL },
+#     RESCLASS_JOB      : { 'label': 'Job'      , 'class': ResourceJob      , 'resource': OPTION_TYPE_RESOURCE_JOB },
+#     RESCLASS_FILESET  : { 'label': 'FileSet'  , 'class': ResourceFileSet  , 'resource': OPTION_TYPE_RESOURCE_FILESET },
+#     RESCLASS_SCHEDULE : { 'label': 'Schedule' , 'class': ResourceSchedule , 'resource': OPTION_TYPE_RESOURCE_SCHEDULE },
+#     RESCLASS_CONSOLE  : { 'label': 'Console'  , 'class': ResourceConsole  , 'resource': OPTION_TYPE_RESOURCE_CONSOLE },
+# }
+# 
+# ResourcesList = {
+#     RESCLASS_CLIENT   : ResourceClient,
+#     RESCLASS_DEVICE   : ResourceDevice,
+#     RESCLASS_STORAGE  : ResourceStorage,
+#     RESCLASS_DIRECTOR : ResourceDirector,
+#     RESCLASS_MESSAGE  : ResourceMessages,
+#     RESCLASS_CATALOG  : ResourceCatalog,
+#     RESCLASS_JOB      : ResourceJob,
+#     RESCLASS_FILESET  : ResourceFileSet,
+#     RESCLASS_SCHEDULE : ResourceSchedule,
+#     RESCLASS_CONSOLE  : ResourceConsole,
+# }
+# 
+# class Stack:
+#     m_values = {}
+#     m_icount = -1
+#     def push(self, value):
+#         self.mi_icount =+ 1
+#         self.m_values[m_icount] = value 
+#     def pop(self):
+#         result = self.m_values[self.m_icount]
+#         self.m_values[self.m_icount]
+#         self.m_icount =- 1
+#         return result
 
 class MakeResourcesFromConfig:
     m_list_resources = []

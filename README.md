@@ -23,9 +23,7 @@ Web API
 =======
 The below listed functions return json-formatted responses. Top level variables are 'data' and 'success'. If success has true value, then the backend has been processed with no errors. It doesn't garantuee that the response contain some useful data, it also can contain no data. Data variable conains data were requiested.
 
-- /get/resource               returns a list of parsed in config files resources
-- /get/resource/<resource>    returns a list of attributes for the resource
-- /defs/resource              returns a list of known resources
-- /defs/resource/<resource>   returns a list of the all attributes could be used for the resource
+- /def/resource              returns a list of template resources (file: resources.def)
+- /def/resource/<resource>   returns a list of the all attributes could be used for the resource
 
 

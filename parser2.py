@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 
-from config import *
+#from config import *
 from copy import deepcopy
 NodeData   = 1
 NodeSubset = 2
