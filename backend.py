@@ -25,6 +25,10 @@ known_resources = resourcesOptions()
 def html_main():
     return template(template_main)
 
+@route("/html/<file>")
+def static_uri(file):
+    return static_file(file, root='html')
+
 @route("/def/resource")
 def def_resources():
     result = {'data': resourcesOptions().sections(), 'success': True}

@@ -5,7 +5,7 @@ function load_mainboard() {
         panels: [
             { type: 'left', size: 200, resizable: true, style: pstyle, content: 'left' },
             { type: 'main', style: pstyle, content: 'main' },
-            { type: 'top', size: 35, style: pstyle, content: 'PUT HERE NAME OF A CURRENT PAC FILE' },
+            { type: 'top', size: 35, style: pstyle, content: 'Stand by panel' },
             { type: 'right', size: 350, resizable: true, style: pstyle, content: '' },
         ]
     }); 
@@ -27,7 +27,6 @@ function load_sidebar() {
                     { id: 'level-1-pacfile-show-updated', text: 'Show updated pac', pac: 'fa-star' },
                     { id: 'level-1-changes-commit', text: 'Commit changes', pac: 'fa-start-empty' },
                     { id: 'level-1-merge-pacfile', text: 'Merge Data', pac: 'fa-star' },
-//                    { id: 'level-1-proxies', text: 'List proxies', pac: 'fa-star-empty' },
                 ],
             }
         ],
