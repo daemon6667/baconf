@@ -54,8 +54,9 @@ function load_sidebar() {
                 load_list_resources();
                 w2ui['mainworkplace'].content('main', w2ui['list_resources'])
 
-            } else if (event.target == 'level-1-rules') {
-                w2ui['mainworkplace'].content('main', w2ui['list_rules'])
+            } else if (event.target == 'level-1-add-device') {
+				formadd_resource('Device');
+                //w2ui['mainworkplace'].content('main', w2ui['form'])
                 //w2ui['mainworkplace'].content('main', w2ui.list_rules);
             } else if (event.target == 'level-1-rule-add') {
                 form_rule_edit();
@@ -77,6 +78,9 @@ function load_sidebar() {
     })
 };
 
+function formadd_resource(resource_type) {
+	$('#list_resources').load('/htmladd/' + resource_type);
+};
 
 function load_listrules(pacfile) {
     console.log("Selected pacfile is " + selected_pacfile);
