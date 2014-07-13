@@ -9,6 +9,7 @@
     </head>
 <body>
 <div id='mainworkplace' style="width: 100%; height: 500px;"></div>
+<div id='formadd'></div>
 <script type='text/javascript'>
     load_sidebar();
     load_mainboard();

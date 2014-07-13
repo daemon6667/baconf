@@ -44,7 +44,7 @@ class DefResources:
             result = self.m_data[section]
         return result
 
-    def has_attr(section, attr):
+    def has_attr(self, section, attr):
         result = False
         if self.has_section(section):
             for x in self.section(section).keys():
@@ -61,6 +61,12 @@ class DefResources:
                 break
         return result
     
+    def list_possiblevalues(self, section, attr):
+        result = []
+        if (self.has_attr(section, attr) and 'possiblevalues' in self.attr_properties(section, attr)):
+            result = [ x.strip() for x in self.attr_properties(section, attr)['possiblevalues'].split(',') ]
+        return result
+
     def has_section(self, section):
         return self.section(section) != None
 

@@ -26,9 +26,13 @@ known_resources = resourcesOptions()
 def html_main():
     return template(template_main)
 
-@route("/htmladd/<resource>")
-def htmladd_resource(resource):
-    return HtmlFormAddResource(DefResources(filedefs)).makeHtml(resource)
+@route("/htmladd/<resource>/html")
+def htmladd_resource_html(resource):
+    return HtmlFormAddResource(DefResources(filedefs)).makeHtml(resource)[0]
+
+@route("/htmladd/<resource>/js")
+def htmladd_resource_js(resource):
+    return HtmlFormAddResource(DefResources(filedefs)).makeHtml(resource)[1]
 
 @route("/html/<file>")
 def static_uri(file):
@@ -43,6 +47,11 @@ def def_resources():
 def def_resource(resource):
     result = {'data': resourcesOptions().section(resource), 'success': True}
     return json.dumps(result)
+
+@route("/def/resource/<resource>/<attr>/values")
+def list_possiblevalues(resource, attr):
+    return json.dumps(resourcesOptions().list_possiblevalues(resource, attr))
+
 
 if __name__ == "__main__":
     run(host='localhost', port=8080, debug=True, reloader=True)

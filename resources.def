@@ -38,7 +38,7 @@ SDAddress           = type=IPAddr
 [Device]
 Name                = type=String required=true
 Archive Device      = type=String 
-Device Type         = type=Enum possiblevalues=File,Tape,Fifo 
+Device Type         = type=Enum possiblevalues=File,Tape,Fifo required=true
 Media Type          = type=String
 Autochanger         = type=Bool default=false
 Changer Device      = type=String 

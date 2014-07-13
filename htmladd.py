@@ -5,7 +5,7 @@ from resourcesconf import DefResources
 def MatchResTypeHtmlType(res_type):
     result = None
     typ = res_type.lower()
-    if typ in [ "int", "integer", "fsize", "duration", "ipaddr", "ipaddextra", "enum", "string", ]:
+    if typ in [ "int", "list", "integer", "fsize", "duration", "ipaddr", "ipaddextra", "enum", "string", ]:
        result = "text"
     elif typ in [ "bool", ]:
        result = "checkbox"
@@ -16,17 +16,12 @@ def MatchResTypeHtmlType(res_type):
 def MatchResTypeBottleType(res_type):
     result = None
     typ = res_type.lower()
-    if typ in [ "int", "integer", "fsize", "duration", ]:
-        result = "int"
-    elif typ in [ "ipaddr", "ipaddrextra", "string", ]:
-        result = "text"
-    elif typ in [ "enum", ]:
-        result = "enum"
-    elif typ in [ "bool", ]:
-        result = "checkbox"
-    elif typ in [ "password", ]:
-        result = "password"
-         
+    if   typ in [ "int", "integer", "fsize", "duration", ]: result = "int"
+    elif typ in [ "ipaddr", "ipaddrextra", "string", ]: result = "text"
+    elif typ in [ "enum", ]: result = "enum"
+    elif typ in [ "list", ]: result = "list"
+    elif typ in [ "bool", ]: result = "checkbox"
+    elif typ in [ "password", ]: result = "password"
     return result
 
 class HtmlFormAddResource:
@@ -34,12 +29,13 @@ class HtmlFormAddResource:
     def __init__(self, def_resources):
         self.m_defresources = def_resources
 
-    def makeJS(self, fields):
+    def makeJS(self, section, fields):
         result = """
         function make_formadd() {
             $('#form').w2form({
                 name: 'form',
                 url:  'htmladd/save',
+                formURL: 'htmladd/%s/html',
                 fields: [
                    %s 
                 ],
@@ -52,13 +48,13 @@ class HtmlFormAddResource:
                     }
                 }
             })
-        }
-        """ % (fields)
+        };
+        """ % (section, fields)
         return result
 
     def makeHtml(self, section):
-        result = """
-        <div id="form" style="width: 750px;">
+        result_html = """
+        <div id="form" style="width: 100%;">
             <div class="w2ui-page page-0">
         """
         jsfields = ""
@@ -66,7 +62,7 @@ class HtmlFormAddResource:
         for attr in attrs:
             props = self.m_defresources.attr_properties(section, attr)
             name = attr.replace(' ', '').lower()
-            result += """
+            result_html += """
                 <div class="w2ui-field">
                     <label>%s</label>
                     <div>
@@ -74,26 +70,29 @@ class HtmlFormAddResource:
                     </div>
                 </div>
             """ % (attr, name, MatchResTypeHtmlType(props['type']))
+                 
             jsfields += """
-                    { name: '%s', type: '%s' %s }, """ % (
+                    { name: '%s', type: '%s'%s%s }, """ % (
                         name, 
                         MatchResTypeBottleType(props['type']),
-                        ', required: true' if ('required' in props and props['required'].lower() == 'true') else ''
+                        ', required: true' if ('required' in props and props['required'].lower() == 'true') else '',
+                        ", options: { url: '/get/resource/%s/%s/values', items: %s }" % (section, name, str(self.m_defresources.list_possiblevalues(section, attr))) if (props['type'].lower() in ['enum', 'list']) else ''
                     )
-        result += """
+        result_html += """
             </div>
             <div class="w2ui-buttons">
                 <button class="btn" name="reset">Reset</button>
                 <botton class="btn" name="save">Save</button>
             </div>
         </div>
-        <script type="text/javascript">
+        </div>
+        """
+        result_js = """
         %s
-        </script>
-        """ % (self.makeJS(jsfields))
-        return result
+        """ % (self.makeJS(section, jsfields))
+        return (result_html, result_js)
 
 if __name__ == "__main__":
     h = HtmlFormAddResource(DefResources('resources.def'))
-    print(h.makeHtml('Device'))
+    print(h.makeHtml('Device')[1])
     pass

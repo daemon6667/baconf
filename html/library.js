@@ -56,7 +56,7 @@ function load_sidebar() {
 
             } else if (event.target == 'level-1-add-device') {
 				formadd_resource('Device');
-                //w2ui['mainworkplace'].content('main', w2ui['form'])
+                w2ui['mainworkplace'].content('main', w2ui['form'])
                 //w2ui['mainworkplace'].content('main', w2ui.list_rules);
             } else if (event.target == 'level-1-rule-add') {
                 form_rule_edit();
@@ -79,33 +79,9 @@ function load_sidebar() {
 };
 
 function formadd_resource(resource_type) {
-	$('#list_resources').load('/htmladd/' + resource_type);
+	$.get('/htmladd/' + resource_type + '/js', function(data) {
+		eval(data);
+		make_formadd();
+	});
 };
 
-function load_listrules(pacfile) {
-    console.log("Selected pacfile is " + selected_pacfile);
-    $('#list_rules').w2grid({
-        name: 'list_rules',
-        header: 'The list of defined rules in the PAC file',
-        url: '/json/pacfile/' + pacfile + '/rules',
-        //url: '/json/pacfile/' + selected_pacfile + '/rules',
-        show: {
-            header: true,
-            lineNumbers: true,
-            toolbar: true,
-            toolbarAdd: false,
-            toolbarEdit: false,
-            toolbarDelete: true,
-            multiSelect: true,
-            footer: true,
-            selectColumn: true,
-        },
-        multiSelect: false, 
-        columns: [
-            { field: 'id', caption: 'ID', size: '10%', sortable: true, },
-            { field: 'function', caption: 'Compare function', size: '25%', sortable: true, },
-            { field: 'userdata', caption: 'User data', size: '40%', sortable: true, },
-            { field: 'proxy', caption: 'Proxy', size: '25%', sortable: true, },
-        ],
-    })
-}
