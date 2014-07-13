@@ -6,6 +6,7 @@ import sys, os, json
 from bottle import post, route, run, request, template, response, redirect, static_file
 from resmanager2 import ResourceBuilder
 from resourcesconf import DefResources
+from htmladd import HtmlFormAddResource
 basedir = "/".join(os.path.abspath(sys.argv[0]).split('/')[0:-1])
 filedefs = "%s/resources.def" % basedir
 template_main = "html/main"
@@ -24,6 +25,10 @@ known_resources = resourcesOptions()
 @route("/")
 def html_main():
     return template(template_main)
+
+@route("/htmladd/<resource>")
+def htmladd_resource(resource):
+    return HtmlFormAddResource(DefResources(filedefs)).makeHtml(resource)
 
 @route("/html/<file>")
 def static_uri(file):

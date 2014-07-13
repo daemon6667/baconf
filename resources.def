@@ -1,3 +1,12 @@
+#
+# Available types:
+# String, Integer, Bool, Password, Resource, IPAddr, Enum, Duration, IPAddrExtra, FSize
+#
+# IPAddr, Duration, IPAddrExtra, FSize may be replaced by String type
+# Resource is link to another resource
+# Required = [True|False], by default is False
+# 
+
 [Director]
 Name                = type=String required=true
 DIRPort             = type=Integer default=9101
@@ -49,7 +58,7 @@ Mount Point         = type=String
 Mount Command       = type=String
 Unmount Command     = type=String
 Block Checksum      = type=Bool default=true
-Minumum Block Size  = type=FSize default=64512
+Minimum Block Size  = type=FSize default=64512
 Maximum Block Size  = type=FSize default=64512
 Maximum Volume Size = type=FSize required=true
 Maximum File Size   = type=FSize required=true

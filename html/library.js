@@ -11,7 +11,30 @@ function load_mainboard() {
     }); 
     w2ui['mainworkplace'].content('left', w2ui['sidebar']);
     w2ui['mainworkplace'].toggle('right', window.instant);
-    w2ui.sidebar.hide('level-1-proxies', 'level-1-changes-commit', 'level-1-rule-add', 'level-1-rules', 'level-1-pacfile-show', 'level-1-merge-pacfile', 'level-1-pacfile-show-updated');
+//    w2ui.sidebar.hide('level-1-proxies', 'level-1-changes-commit', 'level-1-rule-add', 'level-1-rules', 'level-1-pacfile-show', 'level-1-merge-pacfile', 'level-1-pacfile-show-updated');
+};
+
+function load_list_resources() {
+	$('#list_resources').w2grid({
+		name: 'list_resources',
+		header: 'List of resources',
+		show: {
+			toolbar: true,
+			footer: true,
+			toolbarAdd: true,
+			toolbarDelete: true,
+		},
+		columns: [
+			{ field: 'recid', caption: 'ID', size: '30px', sortable: true, attr: 'align=center' },
+			{ field: 'enabled', caption: 'Enabled', size: '75px', sortable: true, attr: 'align=center' },
+			{ field: 'type',  caption: 'Resource Type', size: '250px', sortable: true },
+			{ field: 'name',  caption: 'Name', size: '200px', sortable: true } 	
+		],
+		sortData: [{field: 'type', direction: 'ASC'}, {field: 'name', director: 'ASC'}],
+		onAdd: {
+			
+		}
+	});
 };
 
 function load_sidebar() {
@@ -20,21 +43,17 @@ function load_sidebar() {
         nodes: [
             { id: 'level-1', text: 'Choose action', img: 'icon-folder', expanded: true, group: true,
                 nodes: [
-                    { id: 'level-1-resources', text: 'Resources', pac: 'fs-start' },
-                    { id: 'level-1-rules', text: 'List rules', pac: 'fa-home' },
-                    { id: 'level-1-rule-add', text: 'Add a new rule', pac: 'fa-star' },
-                    { id: 'level-1-pacfile-show', text: 'Show pac', pac: 'fa-star' },
-                    { id: 'level-1-pacfile-show-updated', text: 'Show updated pac', pac: 'fa-star' },
-                    { id: 'level-1-changes-commit', text: 'Commit changes', pac: 'fa-start-empty' },
-                    { id: 'level-1-merge-pacfile', text: 'Merge Data', pac: 'fa-star' },
+                    { id: 'level-1-resources', text: 'Load', pac: 'fs-start' },
+                    { id: 'level-1-add-device', text: 'new Device', pac: 'fa_device' },
                 ],
             }
         ],
         onClick: function(event) {
             console.log("Target: " + event.target);
             if (event.target == 'level-1-resources') {
-                load_listpacfiles();
-                w2ui['mainworkplace'].content('main', w2ui['list_pacfiles'])
+                load_list_resources();
+                w2ui['mainworkplace'].content('main', w2ui['list_resources'])
+
             } else if (event.target == 'level-1-rules') {
                 w2ui['mainworkplace'].content('main', w2ui['list_rules'])
                 //w2ui['mainworkplace'].content('main', w2ui.list_rules);
@@ -57,6 +76,7 @@ function load_sidebar() {
         }
     })
 };
+
 
 function load_listrules(pacfile) {
     console.log("Selected pacfile is " + selected_pacfile);

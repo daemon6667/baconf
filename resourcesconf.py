@@ -39,9 +39,9 @@ class DefResources:
         return result
 
     def attrs(self, section):
-        result = []
+        result = None
         if self.has_section(section):
-            result = self.m_data[section].keys()
+            result = self.m_data[section]
         return result
 
     def has_attr(section, attr):
@@ -53,14 +53,16 @@ class DefResources:
                     break
         return result
 
-    def properties(self, section, attr):
+    def attr_properties(self, section, attr):
         result = None
-        if self.has_section(section) and attr in self.attrs(section):
-            result = self.m_data[section][attr]
+        for x in self.attrs(section):
+            if x.lower() == attr.lower():
+                result = self.attrs(section)[x]
+                break
         return result
-
+    
     def has_section(self, section):
-        return self.has_section(section) != None
+        return self.section(section) != None
 
 #if __name__ == "__main__":
 #    r = DefResources('resources.def')

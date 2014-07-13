@@ -26,4 +26,10 @@ The below listed functions return json-formatted responses. Top level variables 
 - /def/resource              returns a list of template resources (file: resources.def)
 - /def/resource/<resource>   returns a list of the all attributes could be used for the resource
 
+Working directory structure
+===========================
+Directory 
+- html	  - static files for building web interface
+- current - directory should contain either started bacula config files, or be empty to start with no bacula configs
+
 
