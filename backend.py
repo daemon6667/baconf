@@ -29,17 +29,34 @@ def html_main():
 
 @post("/htmladd/<resource>/save")
 def htmladd_resource_save(resource):
+    import re
     data = {}
     restype = ""
+    for key, value in (request.forms.allitems()):
+	print(key, '=', value)
+       # print(" Source key: ", key)
+       # m = re.match('^(record)\[(\w+)\]$', key)
+       # if m:
+        #    data.append(m.groups()[1] + '=' + value)
+#            print('Found: ', m.groups(), '=', value)
+            #data[m.groups()[1]] = value
+	#print(key, value)
+    print(json.dumps(",".join(data)))
+    return ""
+    # print(request.params.get('record'))
     for (key, value) in request.forms.allitems():
         if key.startswith('record['):
             data[key[7:-1]] = value
         elif key == 'name':
             restype = value[5:]
-    print(data, restype)
+#    print(data, restype)
     s = Storage(storagename)
-    s.saveResource('default', data['name'], restype, json.dumps(data))
-    return ""
+    response['status'] = 'success'
+    save_result = s.saveResource('default', data['name'], restype, json.dumps(data))
+    if not save_result:
+        response['status'] = 'error'
+        response['message'] = 'The resources item was not saved'
+    return response
 
 @post("/resources")
 def resources_list():

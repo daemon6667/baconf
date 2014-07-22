@@ -56,8 +56,13 @@ class Storage:
 
     def saveResource(self, namespace, name, restype, data, enabled=True, note=""):
         cur = self.m_connection.cursor()
-        cur.execute("insert into resources(namespace, name, restype, data, enabled, note) values (?,?,?,?,?,?)", (namespace, name, restype, data, enabled, note))
-        self.m_connection.commit()
+	result = True
+	try:
+            cur.execute("insert into resources(namespace, name, restype, data, enabled, note) values (?,?,?,?,?,?)", (namespace, name, restype, data, enabled, note))
+            self.m_connection.commit()
+  	except:
+            result = False
+ 	return result
 
     def namespaces(self):
         result = []
