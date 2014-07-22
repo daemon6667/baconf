@@ -33,3 +33,5 @@ Directory
 - current - directory should contain either started bacula config files, or be empty to start with no bacula configs
 
 
+Test
+====
