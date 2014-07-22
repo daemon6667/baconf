@@ -38,6 +38,28 @@ def make_dict(buffer, str_data, value):
             if len(key):
                 buffer[key] = value
 
+def merge(d1, d2, mode=0):
+    if not type(d2) is dict:
+        raise Exception("d2 is not a dict")
+
+    if not type(d1) is dict:
+        if mode == 0:
+            raise Exception("d1 is not a dict")
+        return d2
+
+    result = dict(d1)
+
+    for k, v in d2.iteritems():
+        if k in result and type(v) is dict:
+            result[k] = merge(result[k], v, 1)
+        else:
+            if mode == 1:
+                result.update(d2)
+            else:
+                result[k] = v
+    return result
+
+
 if __name__ == "__main__":
     data = [
         ('record[unmountcommand]', '=', ''),
@@ -78,7 +100,9 @@ if __name__ == "__main__":
     for item in data:  
         key, tmp, value = item
         print(item)
-        make_dict(buffer, key, value)
-        print(json.dumps(buffer, indent=4))
+        temp_buf = {}
+        make_dict(temp_buf, key, value)
+        buffer = merge(buffer, temp_buf)
+    print(json.dumps(buffer, indent=4))
 
 
