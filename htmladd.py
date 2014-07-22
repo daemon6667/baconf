@@ -22,6 +22,9 @@ def MatchResTypeBottleType(res_type):
     elif typ in [ "list", ]: result = "list"
     elif typ in [ "bool", ]: result = "checkbox"
     elif typ in [ "password", ]: result = "password"
+    else:
+        result = "text"
+        print("Type is not recognized: %s" % res_type)
     return result
 
 class HtmlFormAddResource:
@@ -29,15 +32,77 @@ class HtmlFormAddResource:
     def __init__(self, def_resources):
         self.m_defresources = def_resources
 
-    def makeJS(self, section, fields):
-        result = """
-        function make_formadd() {
-            $('#form').w2form({
-                name: 'form',
-                url:  'htmladd/save',
-                formURL: 'htmladd/%s/html',
+    def makeFieldsCode(self, language, section):
+        attrs = self.m_defresources.section(section)
+        result_required_fields = ""
+        result_optional_fields = ""
+        result_field_name = ""
+        def add_field_block(lang, attr, name, f_type):
+            result = ""
+            if lang == 'html':
+                result_html = """
+                <div class="w2ui-field">
+                    <div><label>%s<input name="%s" type="%s" size="100" /></label></div>
+                </div>""" % (attr, name, MatchResTypeHtmlType(f_type))
+                result = result_html
+            elif lang == 'javascript':
+                result_js = """
+                    { name: '%s', type: '%s'%s%s }, """ % (
+                    name,
+                    MatchResTypeBottleType(f_type),
+                    ', required: true' if ('required' in props and props['required'].lower() == 'true') else '',
+                    ", options: { items: %s }" % (str(self.m_defresources.list_possiblevalues(section, attr)    )) if (props['type'].lower() in ['enum', 'list']) else ''
+                )
+                result = result_js
+            return result
+ 
+        for attr in attrs:
+            props = self.m_defresources.attr_properties(section, attr)
+            name = attr.replace(' ', '').lower()
+            if 'required' in props and props['required'].lower() in ['true', ]:
+                field = add_field_block(language, attr, name, props['type'])
+                if name.lower() == 'name':
+                    result_field_name = field
+                else:
+                    result_required_fields += field
+            else:
+                result_optional_fields += add_field_block(language, attr, name, props['type'])
+        result = ""
+        if language == 'html':
+            result = """
+            <div class="w2ui-page page-0">
+            <div class="w2ui-field">
+                 <div><label>Namespace<input name="specific_namespace" type="text" size="100" /></label></div>
+            </div>
+            <div class="w2ui-field">
+                 <div><label>Enabled<input name="specific_enabled" type="checkbox" size="100" /></label></div>
+            </div>
+			<hr />
+            %s%s
+            </div>
+            <div class="w2ui-page page-1">%s
+            </div>
+            """ % (result_field_name, result_required_fields, result_optional_fields)
+        elif language == "javascript":
+            result = "" + result_field_name + result_required_fields + result_optional_fields
+        return result
+
+    def makeJS(self, section, namespaces):
+        return """
+        function make_form(form_name) {
+            $('#formadd').w2form({
+                name: '' + form_name,
+                header: 'Adding new item of %s resource type',
+                url:  '/htmladd/%s/save',
+                formURL: '/htmladd/%s/html',
                 fields: [
+                    { name: 'specific_namespace', type: 'list', required: true, options: { items: %s } },
+                    { name: 'specific_enabled', type: 'bool', required: true, },
                    %s 
+                ],
+                tabs: [
+                    { id: 'tab1', caption: 'Mandatory options'},
+                    { id: 'tab2', caption: 'Optional features'},
                 ],
                 actions: {
                     reset: function() {
@@ -47,52 +112,31 @@ class HtmlFormAddResource:
                         this.save();
                     }
                 }
-            })
+            });
+/*
+			$(function() {
+				$.get('/get/namespaces', function(data) {
+					$('input[type=list]').w2field('specific_namespace', { items: JSON.parse(data) });
+				})
+			}); 
+*/
         };
-        """ % (section, fields)
-        return result
+        """ % (section, section, section, namespaces, self.makeFieldsCode('javascript', section))
 
     def makeHtml(self, section):
-        result_html = """
-        <div id="form" style="width: 100%;">
-            <div class="w2ui-page page-0">
-        """
-        jsfields = ""
-        attrs = self.m_defresources.section(section)
-        for attr in attrs:
-            props = self.m_defresources.attr_properties(section, attr)
-            name = attr.replace(' ', '').lower()
-            result_html += """
-                <div class="w2ui-field">
-                    <label>%s</label>
-                    <div>
-                        <input name="%s" type="%s" size="60" />
-                    </div>
-                </div>
-            """ % (attr, name, MatchResTypeHtmlType(props['type']))
-                 
-            jsfields += """
-                    { name: '%s', type: '%s'%s%s }, """ % (
-                        name, 
-                        MatchResTypeBottleType(props['type']),
-                        ', required: true' if ('required' in props and props['required'].lower() == 'true') else '',
-                        ", options: { url: '/get/resource/%s/%s/values', items: %s }" % (section, name, str(self.m_defresources.list_possiblevalues(section, attr))) if (props['type'].lower() in ['enum', 'list']) else ''
-                    )
-        result_html += """
-            </div>
+        return """
+        <div id="form" style="width: 100%%; height: 100%%;">
+            %s
             <div class="w2ui-buttons">
                 <button class="btn" name="reset">Reset</button>
-                <botton class="btn" name="save">Save</button>
+                <button class="btn btn-green" name="save">Save</button>
             </div>
         </div>
-        </div>
-        """
-        result_js = """
-        %s
-        """ % (self.makeJS(section, jsfields))
-        return (result_html, result_js)
+        """ % (self.makeFieldsCode('html', section))
 
 if __name__ == "__main__":
     h = HtmlFormAddResource(DefResources('resources.def'))
-    print(h.makeHtml('Device')[1])
+    #print(h.makeFieldsCode('javascript', 'Device'))
+    #print(h.makeJS('Device'))
+    print(h.makeHtml('Device'))
     pass
