@@ -29,33 +29,19 @@ def html_main():
 
 @post("/htmladd/<resource>/save")
 def htmladd_resource_save(resource):
-    import re
-    data = {}
-    restype = ""
-    for key, value in (request.forms.allitems()):
-	print(key, '=', value)
-       # print(" Source key: ", key)
-       # m = re.match('^(record)\[(\w+)\]$', key)
-       # if m:
-        #    data.append(m.groups()[1] + '=' + value)
-#            print('Found: ', m.groups(), '=', value)
-            #data[m.groups()[1]] = value
-	#print(key, value)
-    print(json.dumps(",".join(data)))
-    return ""
-    # print(request.params.get('record'))
-    for (key, value) in request.forms.allitems():
-        if key.startswith('record['):
-            data[key[7:-1]] = value
-        elif key == 'name':
-            restype = value[5:]
-#    print(data, restype)
-    s = Storage(storagename)
+    postdata = unpack_postdata(request.forms.allitems())
+    print(json.dumps(postdata, indent=4))
+
     response['status'] = 'success'
-    save_result = s.saveResource('default', data['name'], restype, json.dumps(data))
-    if not save_result:
-        response['status'] = 'error'
-        response['message'] = 'The resources item was not saved'
+    if postdata['cmd'] == 'save-record':
+        s = Storage(storagename)
+        save_result = s.saveResource(postdata['record']['specific_namespace']['text'], 
+                                     postdata['record']['name'], 
+                                     postdata['restype'],
+                                     json.dumps(postdata['record']))
+        if not save_result:
+                response['status'] = 'error'
+                response['message'] = 'The resources item was not saved'
     return response
 
 @post("/resources")
@@ -66,6 +52,8 @@ def resources_list():
         "total": len(data),
         "records": data
     }
+    postdata = unpack_postdata(request.forms.allitems())
+    print(json.dumps(postdata, indent=4))
     return  json.dumps(send_data)
 
 @route("/get/namespaces")
@@ -101,6 +89,69 @@ def def_resource(resource):
 def list_possiblevalues(resource, attr):
     return json.dumps(resourcesOptions().list_possiblevalues(resource, attr))
 
+def convert_postdata(buffer, str_data, value):
+    #print("  >> Source: ", str_data)
+    key = ""
+    tag_open = False
+    tag_close = False
+    cur_pos = -1
+
+    while cur_pos < len(str_data)-1:
+        cur_pos += 1
+        c = str_data[cur_pos]
+        if c in ['[', ]:
+            tag_open = True
+            if len(key):
+                buffer[key] = {}
+                convert_postdata(buffer[key], str_data[cur_pos:], value)
+                return
+            continue
+        if c in [']', ] and tag_open:
+            tag_close = True            
+            buffer[key] = ""
+            if cur_pos == len(str_data)-1:
+                #print("Added key: %s" % key)
+                buffer[key] = value
+            else:
+                buffer[key] = {}
+                convert_postdata(buffer[key], str_data[cur_pos+1:], value)
+                return
+            key = ""
+            tag_close = False
+            tag_open = False
+            continue
+        key += c
+        if cur_pos == len(str_data) - 1:
+            if len(key):
+                buffer[key] = value
+
+def unpack_postdata(listdata):
+    def merge_dicts(d1, d2, mode=0):    
+        if not type(d2) is dict:
+            raise Exception("d2 is not a dict")
+    
+        if not type(d1) is dict:
+            if mode == 0:
+                raise Exception("d1 is not a dict")
+            return d2
+    
+        result = dict(d1)
+    
+        for k, v in d2.iteritems():
+            if k in result and type(v) is dict:
+                result[k] = merge_dicts(result[k], v, 1)
+            else:
+                if mode == 1:
+                    result.update(d2)
+                else:
+                    result[k] = v
+        return result
+    buffer = {}
+    for longkey, value in listdata:
+        temp_buffer = {}
+        convert_postdata(temp_buffer, longkey, value)
+        buffer = merge_dicts(buffer, temp_buffer)
+    return buffer
 
 if __name__ == "__main__":
     run(host='0.0.0.0', port=8080, debug=True, reloader=True)

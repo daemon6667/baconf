@@ -111,6 +111,9 @@ class HtmlFormAddResource:
                     save: function() {
                         this.save();
                     }
+                },
+                postData: {
+                    restype: '%s'
                 }
             });
 /*
@@ -121,7 +124,7 @@ class HtmlFormAddResource:
 			}); 
 */
         };
-        """ % (section, section, section, namespaces, self.makeFieldsCode('javascript', section))
+        """ % (section, section, section, namespaces, self.makeFieldsCode('javascript', section), section)
 
     def makeHtml(self, section):
         return """
