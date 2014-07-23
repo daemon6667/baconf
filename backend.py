@@ -52,6 +52,8 @@ def resources_list():
         "total": len(data),
         "records": data
     }
+    for item in request.forms.allitems():
+        print(item)
     postdata = unpack_postdata(request.forms.allitems())
     print(json.dumps(postdata, indent=4))
     return  json.dumps(send_data)
@@ -89,7 +91,7 @@ def def_resource(resource):
 def list_possiblevalues(resource, attr):
     return json.dumps(resourcesOptions().list_possiblevalues(resource, attr))
 
-def convert_postdata(buffer, str_data, value):
+def convert_postdata(buff, str_data, value):
     #print("  >> Source: ", str_data)
     key = ""
     tag_open = False
@@ -102,29 +104,28 @@ def convert_postdata(buffer, str_data, value):
         if c in ['[', ]:
             tag_open = True
             if len(key):
-                buffer[key] = {}
-                convert_postdata(buffer[key], str_data[cur_pos:], value)
+                buff[key] = {}
+                convert_postdata(buff[key], str_data[cur_pos:], value)
                 return
-            continue
-        if c in [']', ] and tag_open:
-            tag_close = True            
-            buffer[key] = ""
-            if cur_pos == len(str_data)-1:
-                #print("Added key: %s" % key)
-                buffer[key] = value
+        elif c in [']', ] and tag_open:
+            tag_close = True
+            if cur_pos == len(str_data) - 1:
+                if not len(key): key = "_"
+                buff[key] = value
+                continue
             else:
-                buffer[key] = {}
-                convert_postdata(buffer[key], str_data[cur_pos+1:], value)
+                buff[key] = {}
+                convert_postdata(buff[key], str_data[cur_pos+1:], value)
                 return
             key = ""
             tag_close = False
             tag_open = False
-            continue
-        key += c
+        else:
+            key += c
+        
         if cur_pos == len(str_data) - 1:
-            if len(key):
-                buffer[key] = value
-
+            buff[key] = value
+        
 def unpack_postdata(listdata):
     def merge_dicts(d1, d2, mode=0):    
         if not type(d2) is dict:
@@ -139,12 +140,23 @@ def unpack_postdata(listdata):
     
         for k, v in d2.iteritems():
             if k in result and type(v) is dict:
+                print("Key %s = %s" % ( k, v ))
                 result[k] = merge_dicts(result[k], v, 1)
             else:
                 if mode == 1:
+                    print("Result=%s, dict=%s" % (result, d2))
+                    for k2 in result:
+                        if k2 in d2 and type(result[k2]) is not list:
+                            result[k2] = [result[k2], ]
                     result.update(d2)
                 else:
-                    result[k] = v
+                    if k in result:
+                        if type(result[k]) != list:
+                            result[k] = [result[k], v]
+                        else:
+                            result[k].append(v)
+                    else:
+                        result[k] = v
         return result
     buffer = {}
     for longkey, value in listdata:

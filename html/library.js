@@ -23,6 +23,7 @@ function load_list_resources() {
 		header: 'List of resources',
 		url: '/resources',
 		show: {
+            header: true,
 			toolbar: true,
 			footer: true,
 			toolbarAdd: false,
@@ -35,17 +36,19 @@ function load_list_resources() {
                 { type: 'button', id: 'show-namespace-items', caption: 'Show all items in the NS', img: 'icon-folder' }
             ],
         },
+        /*
         menu: [
             { id: 1, text: 'Show item', icon: 'fa-star' },
         ],
+        */
 		columns: [
-			// { field: 'recid', caption: 'ID', size: '30px', sortable: true, attr: 'align=center' },
+			{ field: 'recid', caption: 'ID', size: '30px', sortable: true, attr: 'align=center' },
 			{ field: 'namespace', caption: 'Namespace', size: '80px', sortable: true, attr: 'align=center' },			
 			{ field: 'restype',  caption: 'Resource Type', size: '100px', sortable: true },
 			{ field: 'name',  caption: 'Name', size: '200px', sortable: true },
 			{ field: 'enabled', caption: 'Enabled', size: '75px', sortable: true, attr: 'align=center' },
 		],
-		sortData: [{field: 'type', direction: 'ASC'}, {field: 'name', director: 'ASC'}],
+		// sortData: [{field: 'type', direction: 'ASC'}, {field: 'name', director: 'ASC'}],
 	});
 	w2ui['mainworkplace'].content('main', w2ui['list_resources'])
 };

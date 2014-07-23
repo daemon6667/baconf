@@ -73,12 +73,10 @@ class Storage:
 
     def listResources(self, namespace=None):
         cur = self.m_connection.cursor()
-        cur.execute("select namespace, restype, name, enabled from resources order by namespace");
+        cur.execute("select rowid, namespace, restype, name, enabled from resources order by namespace");
         result = []
-        i = 0
-        for namespace, restype, name, enabled in cur.fetchall():
-            i += 1
-            result.append({'recid': i, 'namespace': namespace, 'restype': restype, 'name': name, 'enabled': True if enabled else False})
+        for rowid, namespace, restype, name, enabled in cur.fetchall():
+            result.append({'recid': rowid, 'namespace': namespace, 'restype': restype, 'name': name, 'enabled': True if enabled else False})
         return result
     
 if __name__ == "__main__":
